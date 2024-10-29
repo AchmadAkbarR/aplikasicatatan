@@ -1,3 +1,4 @@
+import 'package:aplikasicatatan/catatan.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +13,10 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  TextEditingController judulCtrl = TextEditingController();
+  TextEditingController isiCtrl = TextEditingController();
+  List<Catatan> listCatatan = [];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,24 +28,43 @@ class _MainAppState extends State<MainApp> {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              TextField(decoration: InputDecoration(
+              TextField(
+                controller: judulCtrl,
+                decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Judul catatan")),
               const SizedBox(height: 10),
-              TextField(decoration: InputDecoration(
+              TextField(
+                controller: isiCtrl,
+                decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Isi catatan")),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Row(
                 children: [
-                  ElevatedButton(onPressed: () {}, child: Text("Clear")),
-                  ElevatedButton(onPressed: () {}, child: Text("Submit")),
+                  ElevatedButton(onPressed: () {
+                    judulCtrl.clear();
+                    isiCtrl.clear();
+                  }, child: Text("Clear")),
+                  ElevatedButton(onPressed: () {
+                    setState(() {
+                    listCatatan.add(
+                      Catatan(judul: judulCtrl.text, isi: isiCtrl.text)
+                    );
+                    judulCtrl.clear();
+                    isiCtrl.clear();
+                    });
+                    
+                  }, child: Text("Submit")),
                 ],
               ),
-              Expanded(child: ListView.builder(itemBuilder: (context, index){
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listCatatan.length,
+                  itemBuilder: (context, index){
                 return ListTile(
                   leading: Icon(Icons.note_rounded),
-                  title: Text("Judul Catatan"), subtitle: Text("Isi catatan panjang"));
+                  title: Text(listCatatan[index].judul, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text(listCatatan[index].isi));
               }))
             ],
           ),
